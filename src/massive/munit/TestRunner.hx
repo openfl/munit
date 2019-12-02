@@ -209,13 +209,18 @@ class TestRunner implements IAsyncDelegateObserver
             var self = this;
             var runThread:Thread = Thread.create(function()
             {
+                var mainThread:Thread = Thread.readMessage(true);
+                
                 self.execute();
                 while (self.running)
                 {
                     Sys.sleep(.2);
                 }
-                var mainThead:Thread = Thread.readMessage(true);
-                mainThead.sendMessage("done");
+                
+                if (mainThread != null)
+                {
+                    mainThread.sendMessage("done");
+                }
             });
 
             runThread.sendMessage(Thread.current());
